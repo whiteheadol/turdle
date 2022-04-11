@@ -8,6 +8,7 @@ var inputs = document.querySelectorAll('input');
 var guessButton = document.querySelector('#guess-button');
 var keyLetters = document.querySelectorAll('span');
 var errorMessage = document.querySelector('#error-message');
+var gameEndMessage = document.querySelector('#game-end-message');
 var viewRulesButton = document.querySelector('#rules-button');
 var viewGameButton = document.querySelector('#play-button');
 var viewStatsButton = document.querySelector('#stats-button');
@@ -19,6 +20,8 @@ var stats = document.querySelector('#stats-section');
 // Event Listeners
 window.addEventListener('load', setGame);
 
+// Floating code?
+// What does 'keyup' listen for?
 for (var i = 0; i < inputs.length; i++) {
   inputs[i].addEventListener('keyup', function() { moveToNextInput(event) });
 }
@@ -27,7 +30,9 @@ for (var i = 0; i < keyLetters.length; i++) {
   keyLetters[i].addEventListener('click', function() { clickLetter(event) });
 }
 
-guessButton.addEventListener('click', submitGuess);
+guessButton.addEventListener('click', function() {
+  submitGuess();
+});
 
 viewRulesButton.addEventListener('click', viewRules);
 
@@ -37,15 +42,20 @@ viewStatsButton.addEventListener('click', viewStats);
 
 // Functions
 function setGame() {
+  gameEndMessage.innerText = '';
   winningWord = getRandomWord();
   updateInputPermissions();
+  resetKeyLetters();
 }
 
+// How do we have access to the words array?
 function getRandomWord() {
   var randomIndex = Math.floor(Math.random() * 2500);
   return words[randomIndex];
 }
 
+// Inputs a node list
+// Current row begins at 1
 function updateInputPermissions() {
   for(var i = 0; i < inputs.length; i++) {
     if(!inputs[i].id.includes(`-${currentRow}-`)) {
@@ -58,10 +68,22 @@ function updateInputPermissions() {
   inputs[0].focus();
 }
 
+function resetPermissions() {
+  for(var i = 0; i < inputs.length; i++) {
+    inputs[i].value = '';
+    inputs[i].classList = '';
+  }
+
+  inputs[0].focus();
+}
+
+// What is e.keycode? or e.charCode?
+// Not sure how this function works exaclty
+// This is mvoing the 'focus'(?) to the next id down the row
 function moveToNextInput(e) {
   var key = e.keyCode || e.charCode;
 
-  if( key !== 8 && key !== 46 ) {
+  if( key !== 8 && key !== 46 && e.target.id !== 'cell-6-29') {
     var indexOfNext = parseInt(e.target.id.split('-')[2]) + 1;
     inputs[indexOfNext].focus();
   }
@@ -85,10 +107,15 @@ function clickLetter(e) {
 function submitGuess() {
   if (checkIsWord()) {
     errorMessage.innerText = '';
+    gameEndMessage.innerText = '';
     compareGuess();
     if (checkForWin()) {
       declareWinner();
+      currentRow = 1;
+      setTimeout(resetPermissions, 4000);
+      setTimeout(setGame, 4000);
     } else {
+      console.log(currentRow);
       changeRow();
     }
   } else {
@@ -124,7 +151,6 @@ function compareGuess() {
       updateKeyColor(guessLetters[i], 'wrong-key');
     }
   }
-
 }
 
 function updateBoxColor(letterLocation, className) {
@@ -151,17 +177,33 @@ function updateKeyColor(letter, className) {
   keyLetter.classList.add(className);
 }
 
+function resetKeyLetters() {
+  keyLetters.forEach((keyLetter) => {
+    keyLetter.className = '';
+  })
+}
+
 function checkForWin() {
   return guess === winningWord;
 }
 
 function changeRow() {
-  currentRow++;
-  updateInputPermissions();
+  if (currentRow < 6) {
+    currentRow++;
+    updateInputPermissions();
+  } else {
+    gameEndMessage.innerText = 'Sorry! You lost.';
+    currentRow = 1;
+    setTimeout(resetPermissions, 4000);
+    setTimeout(setGame, 4000);
+  }
 }
 
+// There is already a function to determine winner, just need to
+// make this obvious to player and restart game appropriately
 function declareWinner() {
   console.log('winner!');
+  gameEndMessage.innerText = `Congratulations! You won this game of Turdle in ${currentRow} tries!`;
 }
 
 function viewRules() {

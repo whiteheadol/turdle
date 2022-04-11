@@ -99,16 +99,18 @@
             <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-5-24"></th>
           </tr>
           <tr id="row-6">
-            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-5-25"></th>
-            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-5-26"></th>
-            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-5-27"></th>
-            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-5-28"></th>
-            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-5-29"></th>
+            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-6-25"></th>
+            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-6-26"></th>
+            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-6-27"></th>
+            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-6-28"></th>
+            <th><input maxlength="1" onkeypress="return /[a-z]/i.test(event.key)" type="text" name="" value="" id="cell-6-29"></th>
           </tr>
         </table>
         <div class="inline">
           <button type="button" name="guess" id="guess-button">guess!</button>
+          <!-- This error message changes based on what you enter in table -->
           <p id="error-message"></p>
+          <p id="game-end-message"></p>
         </div>
       </section>
       <section id="rules-section" class="collapsed">
@@ -149,6 +151,7 @@
         <p class="informational-text">The Turdle is solved!</p>
       </section>
       <section class="collapsed" id="stats-section">
+        <!-- No functionality to update game stats at the moment -->
         <h3>GAME STATS</h3>
         <p class="informational-text">You've played <span id="stats-total-games">/some number/</span> games.</p>
         <p class="informational-text">You've guessed the correct word <span id="stats-percent-correct">/some number/</span>% of the time.</p>
