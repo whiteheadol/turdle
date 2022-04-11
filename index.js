@@ -2,6 +2,7 @@
 var winningWord = '';
 var currentRow = 1;
 var guess = '';
+var words;
 
 // Query Selectors
 var inputs = document.querySelectorAll('input');
@@ -18,10 +19,16 @@ var rules = document.querySelector('#rules-section');
 var stats = document.querySelector('#stats-section');
 
 // Event Listeners
-window.addEventListener('load', setGame);
+window.addEventListener('load', function() {
+  let wordsPromise = fetch('http://localhost:3001/api/v1/words')
+  .then(wordsPromise => wordsPromise.json())
+  .then(data => {
+    words = data;
+    setGame();
+  })
+  .catch(err => console.log('error'))
+});
 
-// Floating code?
-// What does 'keyup' listen for?
 for (var i = 0; i < inputs.length; i++) {
   inputs[i].addEventListener('keyup', function() { moveToNextInput(event) });
 }
