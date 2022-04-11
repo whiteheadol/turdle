@@ -3,6 +3,9 @@ var winningWord = '';
 var currentRow = 1;
 var guess = '';
 var words;
+var totalRounds = 1;
+var totalRoundsWon = 0;
+var averageToWin = 0;
 
 // Query Selectors
 var inputs = document.querySelectorAll('input');
@@ -17,6 +20,9 @@ var gameBoard = document.querySelector('#game-section');
 var letterKey = document.querySelector('#key-section');
 var rules = document.querySelector('#rules-section');
 var stats = document.querySelector('#stats-section');
+var totalGames = document.querySelector('#stats-total-games');
+var winPercentage = document.querySelector('#stats-percent-correct');
+var averageGuesses = document.querySelector('#stats-average-guesses');
 
 // Event Listeners
 window.addEventListener('load', function() {
@@ -53,6 +59,7 @@ function setGame() {
   winningWord = getRandomWord();
   updateInputPermissions();
   resetKeyLetters();
+  console.log('rounds', totalRounds);
 }
 
 // How do we have access to the words array?
@@ -82,6 +89,7 @@ function resetPermissions() {
   }
 
   inputs[0].focus();
+  totalRounds++;
 }
 
 // What is e.keycode? or e.charCode?
@@ -122,7 +130,7 @@ function submitGuess() {
       setTimeout(resetPermissions, 4000);
       setTimeout(setGame, 4000);
     } else {
-      console.log(currentRow);
+      // console.log(currentRow);
       changeRow();
     }
   } else {
@@ -209,8 +217,16 @@ function changeRow() {
 // There is already a function to determine winner, just need to
 // make this obvious to player and restart game appropriately
 function declareWinner() {
-  console.log('winner!');
+  totalRoundsWon++;
+  console.log('won: ', totalRoundsWon);
   gameEndMessage.innerText = `Congratulations! You won this game of Turdle in ${currentRow} tries!`;
+  updateAverageRounds(currentRow);
+}
+
+function updateAverageRounds(row) {
+  let average = ((`${averageToWin}` * `${totalRounds - 1}`) + row) / `${totalRounds}`;
+  averageToWin = average;
+  averageGuesses.innerText = average;
 }
 
 function viewRules() {
@@ -234,6 +250,9 @@ function viewGame() {
 }
 
 function viewStats() {
+  updatePercentage();
+  // updateAverageRounds();
+  totalGames.innerText = `${totalRounds}`;
   letterKey.classList.add('hidden');
   gameBoard.classList.add('collapsed');
   rules.classList.add('collapsed');
@@ -241,4 +260,17 @@ function viewStats() {
   viewGameButton.classList.remove('active');
   viewRulesButton.classList.remove('active');
   viewStatsButton.classList.add('active');
+}
+
+function updatePercentage() {
+  let percent = ((`${totalRoundsWon}` / `${totalRounds}`) * 100);
+  console.log(percent);
+
+  if (totalRoundsWon === totalRounds) {
+    winPercentage.innerText = 100;
+  } else if (totalRoundsWon > 0) {
+    winPercentage.innerText = percent;
+  } else {
+    winPercentage.innerText = 0;
+  }
 }
